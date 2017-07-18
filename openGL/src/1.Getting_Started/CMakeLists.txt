@@ -1,4 +1,5 @@
 ﻿project( start )
 
-add_executable(Application ${COMMON_CPPS} ${PROJECT_SOURCE_DIR}/PointApp.cpp  )
-# include_directories("${PROJECT_SOURCE_DIR}/helloWindow.cpp")
+# TODO:modify the render script there
+add_executable(Application ${PROJECT_SOURCE_DIR}/PointApp.cpp  )
+# target_link_libraries(${COMMON_LIBS})
