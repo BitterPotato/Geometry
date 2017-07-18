@@ -2,6 +2,8 @@
 #include "PointApp.h"
 #include "Utils.h"
 
+#include <cmath>
+
 #define glCheckError() util::glCheckError_(__FILE__, __LINE__) 
 #define SIZE 1
 #define ELEMENT_NUMBER 1
@@ -24,6 +26,15 @@ void PointApp::run(double timeMills) {
   
   glUseProgram(mProgram);
 
+  GLfloat fv_color[] = {
+    (float)(sin(timeMills)*0.5f + 0.5f),
+    (float)(cos(timeMills)*0.5f + 0.5f),
+    1.0f,
+    1.0f
+  };
+  // the first parameter corresponds to the loaction in the shader
+  glVertexAttrib4fv(0, fv_color);
+
   const int START = 0;
   glDrawArrays(GL_POINTS, START, SIZE);
   
@@ -35,38 +46,38 @@ void PointApp::shutdown() {
 }
 
 void PointApp::initShader() {
-  static const char * vertexStr[] = 
-  {
-      "#version 420 core                             \n"
-      "                                              \n"
-      "void main(void)                               \n"
-      "{                                             \n"
-      "    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);   \n"
-      "}                                             \n"
-  };
   // static const char * vertexStr[] = 
   // {
   //     "#version 420 core                             \n"
   //     "                                              \n"
-  //     "in float in_time;                             \n"
-  //     "out float out_time;                           \n"
-  //     "                                              \n"
   //     "void main(void)                               \n"
   //     "{                                             \n"
   //     "    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);   \n"
-  //     "    out_time = in_time;                       \n"
   //     "}                                             \n"
   // };
+  static const char * vertexStr[] = 
+  {
+      "#version 420 core                             \n"
+      "                                              \n"
+      "layout(location=0) in vec4 in_color;                             \n"
+      "out vec4 out_color;                           \n"
+      "                                              \n"
+      "void main(void)                               \n"
+      "{                                             \n"
+      "    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);   \n"
+      "    out_color = in_color;                       \n"
+      "}                                             \n"
+  };
   static const char * fragStr[] = 
   {
       "#version 420 core                             \n"
       "                                              \n"
       "out vec4 color;                               \n"
-      "in float out_time;                            \n"
+      "in vec4 out_color;                            \n"
       "                                              \n"
       "void main(void)                               \n"
       "{                                             \n"
-      "    color = vec4(0.3, 0.4, 0.3, out_time);    \n"
+      "    color = out_color;    \n"
       "}                                             \n"
   };
 
