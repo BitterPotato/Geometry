@@ -1,5 +1,6 @@
+#include "glad/glad.h"
+#include "PointApp.h"
 #include "GLFW/glfw3.h"
-#include "include/Application.h"
 
 #include <cstdio>
 
@@ -14,16 +15,16 @@ void processInput(GLFWwindow* window) {
 }
 
 int main() {
-  Application* app = new Application();
+  // TODO:always needs to modify there
+  PointApp* app = new PointApp();
+  // ExampleApplicaton* app;
 
   glfwInit();
 
-  app->startup();
-
   // [glfwWindowHint](http://www.glfw.org/docs/latest/window.html#window_hints)
   // user OpenGL version 3.3
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
   // only use core openGL features
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -39,6 +40,8 @@ int main() {
   // register callback
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+  app->startup();
+
   while(!glfwWindowShouldClose(window)) {
     processInput(window);
     
@@ -53,7 +56,7 @@ int main() {
     glfwPollEvents();
   }
   
-  app->shutdown();
+  // app->shutdown();
   // clean/ delte all resources
   glfwTerminate();
   return 0;

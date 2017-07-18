@@ -1,5 +1,5 @@
 #include "GLFW/glfw3.h"
-#include "mesa/GL/gl.h"
+#include "glad/glad.h"
 #include <cstdio>
 
 // called each time  the window is resized
