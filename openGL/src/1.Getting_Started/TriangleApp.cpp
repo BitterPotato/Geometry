@@ -17,7 +17,6 @@ void PointApp::startup() {
 
 void PointApp::run(double timeMills) {
   // ===== render commands =====
-
   // set color
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
   // glCheckError();
@@ -53,12 +52,13 @@ void PointApp::initShader() {
     "        vec4(0.2f, -0.2f, 0.0f, 1.0f)             \n"
     "    );                                            \n"
     "    const vec4 colors[3] = vec4[3](               \n"
-    "        vec4(0.2f, 0.2f, 0.2f, 1.0f),             \n"
-    "        vec4(0.5f, 0.5f, 0.5f, 1.0f),             \n"
-    "        vec4(0.8f, 0.8f, 0.8f, 1.0f)              \n"
+    "        vec4(1.0f, 0.0f, 0.0f, 1.0f),             \n"
+    "        vec4(0.0f, 1.0f, 0.0f, 1.0f),             \n"
+    "        vec4(0.0f, 0.0f, 1.0f, 1.0f)              \n"
     "    );                                            \n"
     "    gl_Position = vertices[gl_VertexID];          \n"
     "    out_color = colors[gl_VertexID];              \n"
+    "}              \n"
   };
   static const char * fragStr[] = 
   {
@@ -72,7 +72,7 @@ void PointApp::initShader() {
       "    color = out_color;    \n"
       "}                                             \n"
   };
-
+  glCheckError();
   GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(vertexShader, ELEMENT_NUMBER, vertexStr, nullptr);
   glCompileShader(vertexShader);

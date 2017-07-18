@@ -85,8 +85,9 @@ int main() {
   // only use core openGL features
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+  // ========= 已停止工作 =========
   // set for debug(is slow)
-  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+  // glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
   // glDebugMessageControl(GL_DEBUG_SOURCE_API, 
   //                     GL_DEBUG_TYPE_ERROR, 
   //                     GL_DEBUG_SEVERITY_HIGH,
