@@ -88,13 +88,10 @@ void PointApp::initShader() {
   GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragShader, ELEMENT_NUMBER, fragStr, nullptr);
   glCompileShader(fragShader);
-  
 
   mProgram = glCreateProgram();
   glAttachShader(mProgram, vertexShader);
   glAttachShader(mProgram, fragShader);
-  
-
   glLinkProgram(mProgram);
   
   glDeleteShader(vertexShader);

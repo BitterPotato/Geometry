@@ -17,6 +17,11 @@ private:
   GLuint mProgram;
   GLuint mVAO;
 
+  GLuint      square_buffer;
+  GLuint      square_vao;
+
+  GLuint      square_program;
+
   void initShader();
 };
 

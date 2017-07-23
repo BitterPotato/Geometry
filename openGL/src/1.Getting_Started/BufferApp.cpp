@@ -3,6 +3,7 @@
 #include "Utils.h"
 
 #include <cmath>
+#include <cstring>
 
 #define glCheckError() util::glCheckError_(__FILE__, __LINE__) 
 #define SIZE 3
@@ -25,7 +26,7 @@ void PointApp::run(double timeMills) {
   
   // glCheckError();
   glUseProgram(mProgram);
-  // glCheckError();
+  glCheckError();
 
   const int START = 0;
   glDrawArrays(GL_TRIANGLES, START, SIZE);
@@ -38,10 +39,12 @@ void PointApp::shutdown() {
 }
 
 void PointApp::initShader() {
+
   static const char * vertexStr[] = 
   {
     "#version 420 core                                 \n"
     "                                                  \n"
+    "layout(location=0) in vec4 color;             \n"
     "out vec4 out_color;                               \n"
     "                                                  \n"
     "void main(void)                                   \n"
@@ -51,13 +54,8 @@ void PointApp::initShader() {
     "        vec4(-0.2f, -0.2f, 0.0f, 1.0f),           \n"
     "        vec4(0.2f, -0.2f, 0.0f, 1.0f)             \n"
     "    );                                            \n"
-    "    const vec4 colors[3] = vec4[3](               \n"
-    "        vec4(1.0f, 0.0f, 0.0f, 1.0f),             \n"
-    "        vec4(0.0f, 1.0f, 0.0f, 1.0f),             \n"
-    "        vec4(0.0f, 0.0f, 1.0f, 1.0f)              \n"
-    "    );                                            \n"
     "    gl_Position = vertices[gl_VertexID];          \n"
-    "    out_color = colors[gl_VertexID];              \n"
+    "    out_color = color;                            \n"
     "}              \n"
   };
   static const char * fragStr[] = 
@@ -110,22 +108,65 @@ void PointApp::initShader() {
   glDeleteShader(vertexShader);
   glDeleteShader(fragShader);
 
-  glGenVertexArrays(SIZE, &mVAO);
+  GLuint buffer;
+  // how many buffer objects and buffer address
+  glCreateBuffers(1, &buffer);
+  // to store vertex buffer
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+  static const float data[] =
+  {
+      0.0f, 1.0f, 0.0f, 1.0f,
+      1.0f, 0.0f, 0.0f, 1.0f,
+      0.0f,  0.0f, 1.0f, 1.0f
+  };
+  // static const float data[] =
+  // {
+  //     1.0f, 0.0f, 0.0f, 1.0f,
+  //     0.0f, 1.0f, 0.0f, 1.0f,
+  //     0.0f,  0.0f, 1.0f, 1.0f
+  // };
+  
+  // way 1. immutable
+  glBufferStorage(GL_ARRAY_BUFFER, sizeof(data), data, GL_MAP_WRITE_BIT);
+  // nullptr only init data in the data
+  // glBufferStorage(GL_ARRAY_BUFFER, sizeof(data), nullptr, GL_MAP_WRITE_BIT);
+  // glNamedBufferStorage(buffer, sizeof(data), data, GL_MAP_WRITE_BIT); 
+  
+
+  // way 2. allocate data store and init
+  // allocate(necessary)
+  // glBufferData(GL_ARRAY_BUFFER, sizeof(data), nullptr, GL_STATIC_DRAW);
+  // // offset and size
+  // glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(data), data);
+  // glNamedBufferSubData(buffer, 0, sizeof(data), data);
+  
+  // way 3.
+  // void * ptr = glMapBuffer(GL_ARRAY_BUFFER, 0, sizeof(data), GL_WRITE_ONLY);
+  // void * ptr = glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(data), GL_MAP_WRITE_BIT);
+  // void * aptr = glNamedBuffer(buffer, GL_WRITE_ONLY);
+  // TODO: memcpy will cause window crash
+  // memcpy(ptr, data, sizeof(data));
+  // glUnmapBuffer(GL_ARRAY_BUFFER);
+
+  glCheckError();
+  // ======== another test ========
+  // create and bind vao to context, then we can use it
+  glCreateVertexArrays(1, &mVAO);
+  // not necessary be called here, but must be called
   glBindVertexArray(mVAO);
   glCheckError();
+  // layout index and buffer index
+  glVertexArrayAttribBinding(mVAO, 0, 0);
+  // bind index, buffer, offset, stride
+  glVertexArrayVertexBuffer(mVAO, 0, buffer, 0, 4);
+  glCheckError();
+  // attri index, value's size, normalized, data offset in every vertex
+  glVertexArrayAttribFormat(mVAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
+  glCheckError();
+  
+  glEnableVertexArrayAttrib(mVAO, 0);
+  // layout index
+  glCheckError();
+
 }
-
-  // vertex
-  // #version 330 core
-
-  // void main(void) {
-  //   gl_Position = vec4(0.0, 0.0, 0.5, 1.0);
-  // }
-
-  // frag
-  // #version 330 core 
-  // out vec4 color;
-
-  // void main(void) {
-  //   color = vec4(0.0, 0.5, 0.5, 1.0);
-  // }
