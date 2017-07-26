@@ -39,15 +39,11 @@ void PointApp::shutdown() {
 }
 
 void PointApp::initShader() {
-
-  glCheckError();
-  // GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  // glShaderSource(vertexShader, ELEMENT_NUMBER, vertexStr, nullptr);
-  // glCompileShader(vertexShader);
   GLuint vertexShader = util::load("openGL/shaders/UniformApp/vertex.glsl", GL_VERTEX_SHADER);
   glCheckError();
-  
-  GLuint fragShader = util::load("openGL/shaders/UniformApp/frag.glsl", GL_FRAGMENT_SHADER);
+
+  glCheckError();
+  GLuint fragShader = util::load("openGL/shaders/LayoutApp/frag.glsl", GL_FRAGMENT_SHADER);
   printf("shader enum: %d", fragShader);
 
   mProgram = glCreateProgram();
@@ -61,19 +57,41 @@ void PointApp::initShader() {
   
   glDeleteShader(vertexShader);
   glDeleteShader(fragShader);
-
-  GLint location = glGetUniformLocation(mProgram, "in_color");
-  printf("location:%d", location);
   
   // necessary
   glUseProgram(mProgram);
+
+  // ============ work out the shared layout param =================
+  static const GLchar * uniformNames[4] =
+  {
+    "ColorBlock.alpha",
+    "ColorBlock.rgb_color",
+    "ColorBlock.trans_matrix",
+    "ColorBlock.dummy"
+  };
+  GLuint uniformIndices[4];
+
+  glGetUniformIndices(mProgram, 4, uniformNames, uniformIndices);
+  
+  GLint uniformOffsets[4];
+  GLint arrayStrides[4];
+  GLint matrixStrides[4];
+  
+  glGetActiveUniformsiv(mProgram, 4, uniformIndices, GL_UNIFORM_OFFSET, uniformOffsets);
+  glGetActiveUniformsiv(mProgram, 4, uniformIndices, GL_UNIFORM_ARRAY_STRIDE, arrayStrides);
+  glGetActiveUniformsiv(mProgram, 4, uniformIndices, GL_UNIFORM_MATRIX_STRIDE, matrixStrides);
+  
+  printf("uniform offsets: %d %d %d %d\n", uniformOffsets[0], uniformOffsets[1], uniformOffsets[2], uniformOffsets[3]);
+  printf("array stride: %d\n", arrayStrides[3]);
+  printf("matrix stride: %d\n", matrixStrides[2]);
+  // ==================================================================
 
   GLfloat s_color[] = 
   {
     0.0f, 1.0f, 1.0f, 1.0f
   };
 
-  // GLuint location = 0;
+  GLint location = glGetUniformLocation(mProgram, "in_color");
   glUniform4fv(location, 1, s_color);
   
   glCheckError();
