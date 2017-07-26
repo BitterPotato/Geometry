@@ -1,7 +1,11 @@
-#version 420 core                          
+#version 450 core                          
 
 uniform vec4 in_color;
 
+layout(binding = 1) uniform atomic_uint var;
+layout(binding = 0, std430) buffer vertices {
+  int vertice[24];
+};
 layout(binding = 2) uniform ColorBlock {
   float alpha;
   vec3 rgb_color;
