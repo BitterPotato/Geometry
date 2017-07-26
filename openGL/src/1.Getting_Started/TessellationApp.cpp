@@ -135,8 +135,6 @@ void PointApp::initShader() {
   glShaderSource(geoShader, ELEMENT_NUMBER, geometryStr, nullptr);
   glCompileShader(geoShader);
 
-  
-
   mProgram = glCreateProgram();
   glAttachShader(mProgram, vertexShader);
   glAttachShader(mProgram, fragShader);

@@ -17,10 +17,13 @@ private:
   GLuint mProgram;
   GLuint mVAO;
 
-  GLuint      square_buffer;
-  GLuint      square_vao;
+  // GLuint      square_buffer;
+  // GLuint      square_vao;
 
-  GLuint      square_program;
+  // GLuint      square_program;
+  GLuint program_fans;
+  GLuint mvp_loc_fans;
+  GLuint vid_offset_loc_fans;
 
   void initShader();
 };

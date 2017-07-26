@@ -24,4 +24,5 @@ link_libraries(${COMMON_LIBS})
 # add_executable(Application ${COMMON_CPPS} ${PROJECT_SOURCE_DIR}/src/PointApp.cpp  )
 
 set(SOURCE_DIR src)
-add_subdirectory( ${SOURCE_DIR}/1.Getting_Started )
+# add_subdirectory( ${SOURCE_DIR}/1.Getting_Started )
+add_subdirectory( ${SOURCE_DIR}/2.Data)

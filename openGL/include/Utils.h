@@ -27,6 +27,47 @@ namespace util {
       }
       return errorCode;
   }
+
+  GLuint load(const char * filename, GLenum shader_type) {
+    #define SHADER_FAILED 0
+    #define CHECK_ERRORS false
+
+    FILE * fp;
+    size_t fileSize;
+    char * data;
+
+    fp = fopen(filename, "rb");
+    if(!fp) {
+        printf("cannot find file");
+        return SHADER_FAILED;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    fileSize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    data = new char[fileSize + 1];
+    if(!data)
+        return SHADER_FAILED;
+
+    fread(data, 1, fileSize, fp);
+    data[fileSize] = 0;
+    fclose(fp);
+
+    GLuint shader = glCreateShader(shader_type);
+    if(!shader)
+        return SHADER_FAILED;
+    
+    glShaderSource(shader, 1, &data, nullptr);
+    delete [] data;
+    glCompileShader(shader);
+
+    if(CHECK_ERRORS) {
+        
+    }
+
+    return shader;
+  }
 }
 
 #endif
