@@ -45,10 +45,10 @@ void PointApp::initShader() {
   glCheckError();
   glTexStorage2D(GL_TEXTURE_2D, 8, GL_RGB8, width, height);
 
-  glCheckError();
-  // 1. use clear
-  // float * data = new float[3]{1.0f, 1.0f, 0.0f};
-  // glClearTexSubImage(texture, 0, 0, 0, 1, width, height, 1, GL_RGB, GL_FLOAT, data);
+  // glCheckError();
+  // // 1. use clear
+  // // float * data = new float[3]{1.0f, 1.0f, 0.0f};
+  // // glClearTexSubImage(texture, 0, 0, 0, 1, width, height, 1, GL_RGB, GL_FLOAT, data);
 
   // 2. use subImage
   float * data = new float[width * height * 3];
@@ -67,6 +67,8 @@ void PointApp::initShader() {
   
   glCheckError();
   delete []data;
+  
+  glCheckError();
 
   GLint vertexShader = util::load("openGL/shaders/SimpleTextureApp/vertex.glsl", GL_VERTEX_SHADER);
   GLint fragShader = util::load("openGL/shaders/SimpleTextureApp/frag.glsl", GL_FRAGMENT_SHADER);
