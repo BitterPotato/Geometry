@@ -17,13 +17,10 @@ private:
   GLuint mProgram;
   GLuint mVAO;
 
-  // GLuint      square_buffer;
-  // GLuint      square_vao;
-
-  // GLuint      square_program;
-  GLuint program_fans;
-  GLuint mvp_loc_fans;
-  GLuint vid_offset_loc_fans;
+  // only used by SeparateModeApp
+  GLuint mProgram1;
+  GLuint mProgram2;
+  GLuint mPipeline;
 
   void initShader();
 };
