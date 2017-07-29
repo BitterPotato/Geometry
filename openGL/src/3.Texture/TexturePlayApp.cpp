@@ -7,7 +7,7 @@
 
 #define glCheckError() util::glCheckError_(__FILE__, __LINE__) 
 
-// not work TODO:
+// app not work TODO:
 void PointApp::startup() {
   Application::startup();
 

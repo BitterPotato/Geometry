@@ -39,6 +39,16 @@ void PointApp::initShader() {
   glCreateTextures(GL_TEXTURE_2D, 1, &texture);
   util::loadTexture("openGL/textures/brick.ktx", texture);
 
+  GLuint sampler;
+  glCreateSamplers(1, &sampler);
+  glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+  glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+  printf("current texture index: %d", texture);
+  // default texture unit is 0
+  glBindSampler(0, sampler);
+
   glGenerateTextureMipmap(texture);
   int w, h;
   int miplevel = 2;
