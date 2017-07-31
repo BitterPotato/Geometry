@@ -69,6 +69,27 @@ namespace util {
     return shader;
   }
 
+  void compileInfo(GLuint shader) {
+    GLint vparams[4];
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &vparams[0]);
+    glGetShaderiv(shader, GL_SHADER_TYPE, &vparams[1]);
+    glGetShaderiv(shader, GL_SHADER_SOURCE_LENGTH, &vparams[2]);
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &vparams[3]);
+
+    // ===== print =====
+    printf("shader compiled with %s\n", vparams[0]? "success":"failure");
+    printf("shader source length is %d \n", vparams[2]);
+    printf("shader log length is %d\n", vparams[3]);
+
+    int logLength = vparams[3];
+    if(logLength != 0) {
+        char logInfo[logLength];
+        // max length and length
+        glGetShaderInfoLog(shader, logLength*2, nullptr, logInfo);
+        printf("log trace: %s", logInfo);
+    }
+  }
+
 struct header
 {
     unsigned char       identifier[12];

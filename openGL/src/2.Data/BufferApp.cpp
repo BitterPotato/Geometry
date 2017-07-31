@@ -154,12 +154,19 @@ void PointApp::initShader() {
   // not necessary be called here, but must be called
   glBindVertexArray(mVAO);
 
-  // layout index and buffer index
-  glVertexArrayAttribBinding(mVAO, 0, 0);
+  // // layout index and buffer index
+  // glVertexArrayAttribBinding(mVAO, 0, 0);
+  // // bind index, buffer, offset, stride
+  // glVertexArrayVertexBuffer(mVAO, 0, buffer, 0, 4);
+  // // attri index, value's size, normalized, data offset in every vertex
+  // glVertexArrayAttribFormat(mVAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
+
+  // alternative: affect the current bind vao
+  glVertexAttribBinding(0, 0);
   // bind index, buffer, offset, stride
-  glVertexArrayVertexBuffer(mVAO, 0, buffer, 0, 4);
+  glBindVertexBuffer(0, buffer, 0, 4);
   // attri index, value's size, normalized, data offset in every vertex
-  glVertexArrayAttribFormat(mVAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
+  glVertexAttribFormat( 0, 4, GL_FLOAT, GL_FALSE, 0);
 
   // layout index
   glEnableVertexArrayAttrib(mVAO, 0);
