@@ -90,6 +90,16 @@ namespace util {
     }
   }
 
+  static void APIENTRY simple_print_callback(GLenum source,
+                                            GLenum type, 
+                                            GLuint id,
+                                            GLenum severity,
+                                            GLsizei length,
+                                            const GLchar* message,
+                                            const void* userParam) {
+        printf("Debug message with source:id %o type: %o id:%u severity:%o %s", source, type, id, severity, message);
+    }
+
 struct header
 {
     unsigned char       identifier[12];

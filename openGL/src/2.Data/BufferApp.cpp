@@ -167,10 +167,14 @@ void PointApp::initShader() {
   glBindVertexBuffer(0, buffer, 0, 4);
   // attri index, value's size, normalized, data offset in every vertex
   glVertexAttribFormat( 0, 4, GL_FLOAT, GL_FALSE, 0);
-
-  // layout index
-  glEnableVertexArrayAttrib(mVAO, 0);
   
-
+  // bind index, value's size, type, normalized, stride, pointer
+  // alternative2: one step including:
+  // glVertexAttribBinding/ glBindVertexBuffer/ glVertexAttribFormat
+  // glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+  
+  // layout index
+  // glEnableVertexArrayAttrib(mVAO, 0);
+  glEnableVertexAttribArray(0);
 
 }
