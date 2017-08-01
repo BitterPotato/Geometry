@@ -2,13 +2,13 @@
 #include "PointApp.h"
 #include "Utils.h"
 
-#include <cstdint>
 #include <cmath>
 
 #define glCheckError() util::glCheckError_(__FILE__, __LINE__) 
 #define SIZE 1
 #define ELEMENT_NUMBER 1
-#define DRAW_NUMS 2;
+
+int FrameCount = 0;
 
 void PointApp::startup() {
   Application::startup();
@@ -16,15 +16,6 @@ void PointApp::startup() {
   // do nothing
   initShader();
 }
-
-typedef unsigned int uint;
-
-typedef  struct {
-    uint  count;
-    uint  primCount;
-    uint  first;
-    uint  baseInstance;
-} DrawArraysIndirectCommand;
 
 void PointApp::run(double timeMills) {
   // ===== render commands =====
@@ -47,19 +38,30 @@ void PointApp::run(double timeMills) {
   glVertexAttrib4fv(0, fv_color);
 
   const int START = 0;
-  uint instanceCnt =  20;
-  uint count = 1;
-  uint first = 0;
-  uint baseInstance = 0;
+  int instanceCnt =  20;
+  
+  if(FrameCount++ == 1) {
+    glBeginTransformFeedback(GL_POINTS);
 
-  // const DrawArraysIndirectCommand cmd = {count, instanceCnt, first, baseInstance};
-  // // the following command will cause invalid_operation
-  // glDrawArraysIndirect(GL_POINTS, &cmd);
+    // glDrawArraysInstanced(GL_POINTS, 0, 1, instanceCnt);
+    glDrawArraysInstancedBaseInstance(GL_POINTS, 0, 1, instanceCnt, 0);
 
-  glCheckError();
-  // glDrawArraysIndirect(GL_POINTS, nullptr);
-  glMultiDrawArraysIndirect(GL_POINTS, nullptr, 2, 0);
-  glCheckError();
+    glEndTransformFeedback();
+    
+    // print data
+    GLfloat data[1024];
+    glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 1024, data);
+    int j = 0;
+    for(int i=0; i<21; i++) {
+      printf("the %d th point: (%.2f, %.2f, %.2f, %.2f)\n", i, data[j], data[j+1], data[j+2], data[j+3]);
+      j+=4;
+    }
+  }
+  else {
+    glDrawArraysInstancedBaseInstance(GL_POINTS, 0, 1, instanceCnt, 0);
+  }
+  
+
 }
 
 void PointApp::shutdown() {
@@ -81,7 +83,8 @@ void PointApp::initShader() {
       "}                                             \n"
   };
 
-  GLuint vertexShader = util::load("openGL/shaders/PointInstPriApp/vertex.glsl", GL_VERTEX_SHADER);
+  GLuint vertexShader = util::load("openGL/shaders/VertexFeedbackApp/vertex.glsl", GL_VERTEX_SHADER);
+  util::compileInfo(vertexShader);
   
   GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fragShader, ELEMENT_NUMBER, fragStr, nullptr);
@@ -90,6 +93,12 @@ void PointApp::initShader() {
   mProgram = glCreateProgram();
   glAttachShader(mProgram, vertexShader);
   glAttachShader(mProgram, fragShader);
+
+  const GLchar * varyingsNames[] = {
+    "var_Position"
+  };
+  glTransformFeedbackVaryings(mProgram, 1, varyingsNames, GL_INTERLEAVED_ATTRIBS);
+
   glLinkProgram(mProgram);
   
   glDeleteShader(vertexShader);
@@ -101,19 +110,10 @@ void PointApp::initShader() {
   // glPointSize(10.0f);
   glEnable(GL_PROGRAM_POINT_SIZE);
 
-  // generate indirect buffer
-  GLuint indirectBuffer;
-  glGenBuffers(1, &indirectBuffer);
-  glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirectBuffer);
-  // allocate
-  glBufferData(GL_DRAW_INDIRECT_BUFFER, DRAW_NUMS*sizeof(DrawArraysIndirectCommand), nullptr, GL_STATIC_DRAW);
-  DrawArraysIndirectCommand * cmd = (DrawArraysIndirectCommand *)glMapBufferRange(GL_DRAW_INDIRECT_BUFFER, 0, DRAW_NUMS*sizeof(DrawArraysIndirectCommand), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-  for(int i=0; i<DRAW_NUMS; i++) {
-    cmd[i].count = 1;
-    cmd[i].primCount = 20;
-    cmd[i].first = 0;
-    cmd[i].baseInstance = 0;
-  }
-  glUnmapBuffer(GL_DRAW_INDIRECT_BUFFER);
+  GLuint feedback_buffer;
+  glGenBuffers(1, &feedback_buffer);
+  glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, feedback_buffer);
+  glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, 1024, nullptr,GL_DYNAMIC_COPY);
 
+  glCheckError();
 }

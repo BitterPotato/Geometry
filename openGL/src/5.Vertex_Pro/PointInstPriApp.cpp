@@ -81,18 +81,3 @@ void PointApp::initShader() {
   // glPointSize(10.0f);
   glEnable(GL_PROGRAM_POINT_SIZE);
 }
-
-  // vertex
-  // #version 330 core
-
-  // void main(void) {
-  //   gl_Position = vec4(0.0, 0.0, 0.5, 1.0);
-  // }
-
-  // frag
-  // #version 330 core 
-  // out vec4 color;
-
-  // void main(void) {
-  //   color = vec4(0.0, 0.5, 0.5, 1.0);
-  // }
